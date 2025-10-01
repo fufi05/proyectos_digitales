@@ -65,10 +65,10 @@ Snake_Head:
     sw a3,0(s1) # simplemente pinto el siguiente si no es una manzana
     j Dpad_check
     
-    Delete_First_Head:
-        sw zero,0(a0)
-        addi s2, s2, 1
-        j Dpad_check
+Delete_First_Head:
+    sw zero,0(a0)
+    addi s2, s2, 1
+    j Snake_Head
         
 right:
   sw zero,0(s1)
@@ -89,11 +89,3 @@ left:
     sw zero,0(s1)
     addi a5, a5, -1
     j Snake_Head
-    
-
-
-
-    
-
-
-

@@ -62,14 +62,13 @@ Snake_Head:
     #Colision con la manzana y serpiente
     lw t5, 0(s1) # Cargo en t5 el color en la dir de mem de s1 (siguiente cabeza)
     beq t5, s3, Generate_apple # si es el color de la manzana salto
-    beq t5, a3, Game_Over   #si el color es verde (choca), game over
     sw a3,0(s1) # simplemente pinto el siguiente si no es una manzana
-   
-  
-Delete_First_Head:
+    j Dpad_check
+    
+    Delete_First_Head:
         sw zero,0(a0)
         addi s2, s2, 1
-        j Snake_Head
+        j Dpad_check
         
 right:
   sw zero,0(s1)
@@ -92,11 +91,9 @@ left:
     j Snake_Head
     
 
-Game_Over:
-    ret #Aqui se escribe la logica para borrar el tablero y empezar de 0
+
 
     
-
 
 
 

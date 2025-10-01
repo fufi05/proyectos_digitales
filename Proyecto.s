@@ -27,7 +27,7 @@ li s6 898 #m
 Generate_apple:
     add t5, s4, a0
     sw s3, 0(t5)
-    li t5, 0
+    sw a3,0(s1) # se pinta tanto la manzana como la cabeza de la serpiente
     j Dpad_check
     
 Dpad_check:
@@ -58,9 +58,14 @@ Snake_Head:
     add a7, a6, a5
     slli a7, a7, 2
     add s1, a0, a7
-    sw a3,0(s1) 
-    j Dpad_check
-    
+ 
+    #Colision con la manzana y serpiente
+    lw t5, 0(s1) # Cargo en t5 el color en la dir de mem de s1 (siguiente cabeza)
+    beq t5, s3, Generate_apple # si es el color de la manzana salto
+    beq t5, a3, Game_Over   #si el color es verde (choca), game over
+    sw a3,0(s1) # simplemente pinto el siguiente si no es una manzana
+   
+  
 Delete_First_Head:
         sw zero,0(a0)
         addi s2, s2, 1
@@ -87,7 +92,8 @@ left:
     j Snake_Head
     
 
-
+Game_Over:
+    ret #Aqui se escribe la logica para borrar el tablero y empezar de 0
 
     
 

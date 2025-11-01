@@ -27,6 +27,8 @@ li s9, 3           # head = 3
 sw a3, 0(a0)       # pixel en (0,0)
 
 # Direcciones de memoria del DPAD 
+
+li s0, 0 #Registro para guardar el ultimo movimiento (0=derecha)
 li t1, 0xF0000000   
 li t2, 0xF0000004    
 li t3, 0xF0000008   
@@ -44,6 +46,13 @@ Generate_apple:
     j Dpad_check
     
 Dpad_check:
+    RNG:
+    mul s4, s4, s5 
+    addi s4, s4, 1
+    rem s4, s4, s6
+    slli s4, s4, 2
+    
+    
     # Se carga el contenido de la dir de mem en t0 y se verifica si es distinto de 0
     lw t0, 0(t1)
     bnez t0, up
@@ -54,12 +63,10 @@ Dpad_check:
     lw t0, 0(t4)       
     bnez t0, right
     
-RNG:
-    mul s4, s4, s5 
-    addi s4, s4, 1
-    rem s4, s4, s6
-    slli s4, s4, 2
-    j Dpad_check
+ 
+    # Caso para cuando no se presiona boton
+    j No_Input
+ 
 
 Snake_Head:
     # Verificar límites de la matriz
@@ -119,22 +126,41 @@ Eat_Apple:
     
     # Generar nueva manzana
     j Generate_apple
-        
+ 
+      
 right:
+    li s0,0
     addi a5, a5, 1
     j Snake_Head
     
 up:
+    li s0,1
     addi a4, a4, -1
     j Snake_Head
 
 down:
+    li s0,2
     addi a4, a4, 1
     j Snake_Head
 
 left:
+    li s0,3
     addi a5, a5, -1
     j Snake_Head
+    
+ No_Input:
+     li t0, 0
+     beq s0, t0, right
+     
+     li t0, 1
+     beq s0, t0, up
+     
+     li t0, 2
+     beq s0, t0, down
+     
+     li t0, 3
+     beq s0, t0, left
+  j Dpad_check
 
 
 Animation_Initialize:

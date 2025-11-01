@@ -11,11 +11,11 @@ li a6, 0 # resultado de la multiplicacion de a1 con x
 li a7, 0 # posicion de la cabeza con la formula
 
 # Cola circular para el cuerpo de la serpiente
-li s7, 0x10010000  # Direcci贸n base del buffer de la cola (elegida)
-li s8, 0           # 脥ndice de inicio cola
-li s9, 0           # 脥ndice de la cabeza
+li s7, 0x10010000  # Direcci髇 base del buffer de la cola (elegida)
+li s8, 0           # 蚽dice de inicio cola
+li s9, 0           # 蚽dice de la cabeza
 li s10, 3          # Longitud actual de la serpiente
-li s11, 100        # Capacidad m谩xima del buffer ( se puede modificar)
+li s11, 100        # Capacidad m醲ima del buffer ( se puede modificar)
 
 # Inicializar las 3 primeras posiciones
 sw zero, 0(s7)     # pos[0] = 0
@@ -36,7 +36,7 @@ li t4, 0xF000000C
 li s3, 0xff0000
 li s4, 128  # xi
 li s5, 2    # a
-li s6, 898  # m
+li s6, 99  # m
 
 Generate_apple:
     add t5, s4, a0
@@ -62,11 +62,11 @@ RNG:
     j Dpad_check
 
 Snake_Head:
-    # Verificar l铆mites de la matriz
-    blt a5, zero, Game_Over      # Si X < 0, game over
-    bge a5, a1, Game_Over        # Si X >= ancho, game over
-    blt a4, zero, Game_Over      # Si Y < 0, game over
-    bge a4, a2, Game_Over        # Si Y >= alto, game over
+    # Verificar l韒ites de la matriz
+    blt a5, zero, Animation_Initialize      # Si X < 0, game over
+    bge a5, a1, Animation_Initialize        # Si X >= ancho, game over
+    blt a4, zero, Animation_Initialize      # Si Y < 0, game over
+    bge a4, a2, Animation_Initialize        # Si Y >= alto, game over
     
     # Calcular la nueva posicion de la cabeza
     mul a6, a4, a1 
@@ -74,14 +74,15 @@ Snake_Head:
     slli a7, a7, 2
     add s1, a0, a7
  
-    # Colision con la manzana
+    # Colision con la manzana y cuerpo
     lw t5, 0(s1) # Cargo en t5 el color en la dir de mem de s1 (siguiente cabeza)
     beq t5, s3, Eat_Apple # si es el color de la manzana salto
+    beq t5, a3, Animation_Initialize # si es el color del cuerpo salto
     
-    # Agregar nueva posici贸n a la cola
-    slli t6, s9, 2      # Multiplicar 铆ndice por 4 (tama帽o de word)
-    add t6, t6, s7      # Direcci贸n = base + offset
-    sw a7, 0(t6)        # Guardar posici贸n en la cola
+    # Agregar nueva posici髇 a la cola
+    slli t6, s9, 2      # Multiplicar 韓dice por 4 (tama駉 de word)
+    add t6, t6, s7      # Direcci髇 = base + offset
+    sw a7, 0(t6)        # Guardar posici髇 en la cola
     
     addi s9, s9, 1      # Incrementar head
     rem s9, s9, s11     # contador del buffer 
@@ -90,10 +91,10 @@ Snake_Head:
     sw a3, 0(s1)
     
     # Eliminar la cola (mantener longitud constante)
-    slli t6, s8, 2      # Multiplicar 铆ndice por 4
-    add t6, t6, s7      # Direcci贸n = base + offset
-    lw t6, 0(t6)        # Cargar posici贸n de la cola
-    add t6, t6, a0      # Convertir a direcci贸n absoluta
+    slli t6, s8, 2      # Multiplicar 韓dice por 4
+    add t6, t6, s7      # Direcci髇 = base + offset
+    lw t6, 0(t6)        # Cargar posici髇 de la cola
+    add t6, t6, a0      # Convertir a direcci髇 absoluta
     sw zero, 0(t6)      # Borrar pixel de la cola
     
     addi s8, s8, 1      # Incrementar  cola 
@@ -102,7 +103,7 @@ Snake_Head:
     j Dpad_check
 
 Eat_Apple:
-    # Agregar nueva posici贸n a la cola
+    # Agregar nueva posici髇 a la cola
     slli t6, s9, 2
     add t6, t6, s7
     sw a7, 0(t6)
@@ -135,6 +136,47 @@ left:
     addi a5, a5, -1
     j Snake_Head
 
+
+Animation_Initialize:
+  #Se inicializan las variables para la animacion de game over
+   li t0, 0 #contador en x
+   li t1,0 #contador en y
+   li t2,0 
+   li t3,0
+   li t4,0
+   li t5, 0xFFECA1
+   li t6, 400
+   j Animation
+
+Animation:
+    mul t2, t0, a1
+    add t3,t2,t1
+    slli t3,t3,2
+    add t4,a0,t3
+    sw t5, 0(t4)
+    addi t1,t1, 1
+    addi t0,t0, 1
+    blt t3, t6, Animation  
+    li t6,0
+    li t4,0
+    j Game_Over
+    
+    
 Game_Over:
-    # Bucle infinito - el juego termina
-    j Game_Over     #Se para el juego alli lo podemos modificar como queramos
+    #registros para limpiar el tablero
+    li t1, 0                # Posicion a eliminar
+    li t2, 400              # offset maximo del tablero en este caso 10*10
+    li t3, 0x0              # color negro
+    j Restart
+
+Restart:
+    # se limpia el tablero
+    add t6, a0, t1          
+    sw t4, 0(t6)            
+    addi t1, t1, 4          
+    blt t1, t2, Restart
+
+li t4, 0
+li t5, 0
+li t6, 0     
+ret

@@ -15,7 +15,7 @@ li s7, 0x10010000  # Dirección base del buffer de la cola (elegida)
 li s8, 0           # Índice de inicio cola
 li s9, 0           # Índice de la cabeza
 li s10, 3          # Longitud actual de la serpiente
-li s11, 100        # Capacidad máxima del buffer ( se puede modificar)
+li s11, 148        # Capacidad máxima del buffer ( se puede modificar)
 
 # Inicializar las 3 primeras posiciones
 sw zero, 0(s7)     # pos[0] = 0
@@ -36,9 +36,9 @@ li t4, 0xF000000C
     
 # Datos iniciales de la manzana
 li s3, 0xff0000
-li s4, 128  # xi
-li s5, 2    # a
-li s6, 99  # m
+li s4, 274  # xi
+li s5, 13    # a
+li s6, 144  # m
 
 Generate_apple:
     add t5, s4, a0
@@ -46,13 +46,6 @@ Generate_apple:
     j Dpad_check
     
 Dpad_check:
-    RNG:
-    mul s4, s4, s5 
-    addi s4, s4, 1
-    rem s4, s4, s6
-    slli s4, s4, 2
-    
-    
     # Se carga el contenido de la dir de mem en t0 y se verifica si es distinto de 0
     lw t0, 0(t1)
     bnez t0, up
@@ -62,7 +55,12 @@ Dpad_check:
     bnez t0, left
     lw t0, 0(t4)       
     bnez t0, right
-    
+   
+    RNG:
+    mul s4, s4, s5 
+    addi s4, s4, 1
+    rem s4, s4, s6
+    slli s4, s4, 2
  
     # Caso para cuando no se presiona boton
     j No_Input
@@ -171,7 +169,7 @@ Animation_Initialize:
    li t3,0
    li t4,0
    li t5, 0xFFECA1
-   li t6, 400
+   li t6, 576 #valor maximo del offset del tablero
    j Animation
 
 Animation:
@@ -191,7 +189,7 @@ Animation:
 Game_Over:
     #registros para limpiar el tablero
     li t1, 0                # Posicion a eliminar
-    li t2, 400              # offset maximo del tablero en este caso 10*10
+    li t2, 576              # offset maximo del tablero en este caso 15*15
     li t3, 0x0              # color negro
     j Restart
 

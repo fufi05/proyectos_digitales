@@ -1,6 +1,6 @@
 module module_mem_principal #(
     parameter int ADDR_WIDTH = 16, // tamaño de la dirección de memoria
-    parameter int SIZE_BLOCK = 256 // Tamaño de los bloques de memoria en bits
+    parameter int SIZE_BLOCK = 256, // Tamaño de los bloques de memoria en bits
     parameter int WORD_SIZE = 32, // Tamaño de la palabra en bits 
     parameter int MEM_SIZE_BYTES = (1 << ADDR_WIDTH) // Tamaño total de la memoria en bytes 
 )(
@@ -40,7 +40,8 @@ localparam int MEM_BYTES = MEM_SIZE_BYTES;
             rd_block_ack <= 1'b0;
             rd_block_data <= '0;
             wr_bytes_ack <= 1'b0;
-        end else begin
+        end 
+        else begin
             // read block
             if (rd_block_req) begin
                 rd_block_ack <= 1'b1;
@@ -60,7 +61,8 @@ localparam int MEM_BYTES = MEM_SIZE_BYTES;
                 for (k = 0; k < 4; k++) begin
                     mem[wr_bytes_addr + k] <= wr_bytes_data[8*k +: 8];
                 end
-            end else begin
+            end 
+            else begin
                 wr_bytes_ack <= 1'b0;
             end
         end

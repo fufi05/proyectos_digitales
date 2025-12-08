@@ -11,11 +11,11 @@ li a6, 0 # resultado de la multiplicacion de a1 con x
 li a7, 0 # posicion de la cabeza con la formula
 
 # Cola circular para el cuerpo de la serpiente
-li s7, 0x10010000  # Dirección base del buffer de la cola
-li s8, 0           # Índice de inicio cola
-li s9, 0           # Índice de la cabeza
+li s7, 0x10010000  # Direcci?n base del buffer de la cola
+li s8, 0           # ?ndice de inicio cola
+li s9, 0           # ?ndice de la cabeza
 li s10, 3          # Longitud actual de la serpiente
-li s11, 148        # Capacidad máxima del buffer
+li s11, 148        # Capacidad m?xima del buffer
 
 # Inicializar las 3 primeras posiciones
 sw zero, 0(s7)
@@ -75,7 +75,7 @@ Dpad_check:
 
 
 Snake_Head:
-    # Verificar límites de la matriz
+    # Verificar l?mites de la matriz
     blt a5, zero, Animation_Initialize
     bge a5, a1, Animation_Initialize
     blt a4, zero, Animation_Initialize
@@ -92,7 +92,7 @@ Snake_Head:
     beq t5, s3, Eat_Apple
     beq t5, a3, Animation_Initialize
     
-    # Agregar nueva posición a la cola
+    # Agregar nueva posici?n a la cola
     slli t6, s9, 2
     add t6, t6, s7
     sw a7, 0(t6)
@@ -116,7 +116,7 @@ Snake_Head:
     j Dpad_check
 
 Eat_Apple:
-    # Agregar nueva posición a la cola
+    # Agregar nueva posici?n a la cola
     slli t6, s9, 2
     add t6, t6, s7
     sw a7, 0(t6)
